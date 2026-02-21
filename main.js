@@ -1,30 +1,15 @@
-// Scene, camera, renderer
+// Setup básico do Three.js
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({antialias:true});
-renderer.setSize(window.innerWidth, 600);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, 500);
 document.getElementById('galaxy').appendChild(renderer.domElement);
-
-// OrbitControls para zoom e rotação
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.enablePan = true;
 
 // Variáveis globais
 let stars = [];
 let starObjects = {};
 
-// Função para converter magnitude em cor
-function magnitudeToColor(mag) {
-  if(mag < 2) return 0xffffff;      // branco para mais brilhantes
-  if(mag < 5) return 0xffddaa;      // amarelo
-  if(mag < 8) return 0xffaa55;      // laranja
-  if(mag < 12) return 0xff7755;     // vermelho claro
-  return 0xff5555;                   // vermelho escuro para fracas
-}
-
-// Carregar estrelas
+// Carregar estrelas do JSON
 fetch('data/stars.json')
   .then(res => res.json())
   .then(data => {
@@ -51,11 +36,11 @@ function populateDropdowns() {
   });
 }
 
-// Adicionar estrelas à cena com cores
+// Adicionar estrelas à cena
 function addStarsToScene() {
   stars.forEach(star => {
-    const geometry = new THREE.SphereGeometry(0.15, 10, 10);
-    const material = new THREE.MeshBasicMaterial({color: magnitudeToColor(star.magnitude)});
+    const geometry = new THREE.SphereGeometry(0.2, 12, 12);
+    const material = new THREE.MeshBasicMaterial({color: 0xffff00});
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.set(star.x, star.y, star.z);
     scene.add(sphere);
@@ -83,22 +68,8 @@ document.getElementById('calcBtn').addEventListener('click', () => {
 
 // Animate Three.js
 camera.position.z = 15;
-
 function animate() {
   requestAnimationFrame(animate);
-  controls.update(); // Necessário para OrbitControls
   renderer.render(scene, camera);
 }
 animate();
-
-// Responsividade
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / 600;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, 600);
-});
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / 600;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, 600);
-});
