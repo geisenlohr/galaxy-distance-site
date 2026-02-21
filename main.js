@@ -1,9 +1,15 @@
-// Setup básico do Three.js
+// Scene, camera, renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, 500);
+const renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setSize(window.innerWidth, 600);
 document.getElementById('galaxy').appendChild(renderer.domElement);
+
+// Controls para zoom e rotação
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.enablePan = true;
 
 // Variáveis globais
 let stars = [];
@@ -68,8 +74,17 @@ document.getElementById('calcBtn').addEventListener('click', () => {
 
 // Animate Three.js
 camera.position.z = 15;
+
 function animate() {
   requestAnimationFrame(animate);
+  controls.update(); // Necessário para OrbitControls
   renderer.render(scene, camera);
 }
 animate();
+
+// Responsividade
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / 600;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, 600);
+});
