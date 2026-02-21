@@ -1,0 +1,24 @@
+import json 
+import random
+
+num_stars = 1000
+stars = []
+
+# Estrela central Sol
+stars.append({"name": "Sol", "x": 0, "y": 0, "z": 0, "magnitude": 4.83})
+
+for i in range(1, num_stars):
+    star = {
+        "name": f"Star {i}",
+        "x": round(random.uniform(-50, 50), 2),
+        "y": round(random.uniform(-50, 50), 2),
+        "z": round(random.uniform(-50, 50), 2),
+        "magnitude": round(random.uniform(1, 15), 2)
+    }
+    stars.append(star)
+
+# Salvar em JSON
+with open("stars.json", "w") as f:
+    json.dump(stars, f, indent=2)
+
+print("stars.json com 1000 estrelas gerado com sucesso!")
